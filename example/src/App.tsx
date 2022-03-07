@@ -1,17 +1,37 @@
 import * as React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text, PermissionsAndroid } from 'react-native';
 import Geolocation from 'react-native-geolocation';
 
 export default function App() {
-  const [result, setResult] = React.useState<number | undefined>();
+  const [location] = React.useState<String | undefined>("No current location");
 
   React.useEffect(() => {
-    Geolocation.multiply(3, 7).then(setResult);
+    PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION).then(result => {
+      console.log('ACCESS_FINE_LOCATION result: ', result);
+      Geolocation.startLocationUpdates().then(() => {
+        console.log('Location updates started');
+        // Geolocation.getCurrentLocation().then((location) => {
+        //   console.log('Location: ', location)
+        //   setTimeout(() => {
+        //     Geolocation.getCurrentLocation().then((location) => {
+        //       console.log('Location 2: ', location)
+        //       Geolocation.getCurrentLocation().then((location) => {
+        //         console.log('Location 3: ', location)
+        //       });
+        //     });
+        //   }, 2000)
+        // });
+      }).catch((err) => {
+        console.log('[BgLocation.init] err: ', err);
+      }) 
+    }).catch(err => {
+      console.log('ACCESS_FINE_LOCATION err: ', err);
+    })
   }, []);
 
   return (
     <View style={styles.container}>
-      <Text>Result: {result}</Text>
+      <Text>Location: {location}</Text>
     </View>
   );
 }

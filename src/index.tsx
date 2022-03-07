@@ -1,7 +1,12 @@
 import { NativeModules } from 'react-native';
 
+type Location = {
+  latitude: Number;
+  longitude: Number;
+}
 type GeolocationType = {
-  multiply(a: number, b: number): Promise<number>;
+  getCurrentLocation(): Promise<Location>;
+  startLocationUpdates(): Promise<void>;
 };
 
 const { Geolocation } = NativeModules;
